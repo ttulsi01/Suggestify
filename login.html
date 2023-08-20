@@ -1,0 +1,140 @@
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Login</title>
+		<link rel="stylesheet" type="text/css" href="loginstyles.css" />
+		<script src="login.js" defer></script>
+	</head>
+	<body>
+		<div class="hero">
+			<div class="form-box">
+				<div class="button-box">
+					<div id="btn"></div>
+					<button type="button" class="toggle-btn" onclick="login()"> Log In </button>
+					<button type="button" class="toggle-btn" onclick="register()"> Register </button>
+				</div>
+				<div class="social-icons">
+					<button type="submit" class="google-btn" id="googleLogIn" > <img src="google_icon.png" /> </button>
+
+				</div>
+				<form id="login" class="input-group">
+					<input type="text" class="input-field" placeholder="Username" id="email" required />
+					<input type="password" class="input-field" placeholder="Password" id="psw" required />
+					<input type="checkbox" class="check-box" />
+					<span>Remember Password</span>
+					<button type="submit" class="submit-btn" id="loginEmailPassword" >Log in</button>
+				</form>
+				<form id="register" class="input-group">
+					<input type="email" class="input-field" placeholder="Email address" id="createEmail" required />
+					<input type="password" class="input-field" placeholder="Password" id="creatPsw" required />
+					<input type="checkbox" class="check-box" />
+					<span>I agree to the terms & conditions</span>
+					<button type="submit" class="submit-btn" id="createUser"><a href="" id="log">Register</a></button>
+					
+				</form>
+			</div>
+		</div>
+
+
+		<script type="module">
+			// Import the functions you need from the SDKs you need
+			import { initializeApp } from "https://www.gstatic.com/firebasejs/9.13.0/firebase-app.js";
+			import { getAuth, 
+					onAuthStateChanged,
+					connectAuthEmulator,
+					signInWithPopup,
+					signInWithEmailAndPassword,
+					createUserWithEmailAndPassword, 
+					signInWithRedirect, getRedirectResult, 
+					GoogleAuthProvider, 
+				} from "https://www.gstatic.com/firebasejs/9.13.0/firebase-auth.js";
+			
+			const firebaseConfig = {
+				apiKey: 'AIzaSyDGTFXLcJqWM4F3yWUXc4QalVBkT2Xg6Rg',
+				authDomain: 'suggestify-6b974.firebaseapp.com',
+				databaseURL: 'https://suggestify-6b974-default-rtdb.firebaseio.com',
+				projectId: 'suggestify-6b974',
+				storageBucket: 'suggestify-6b974.appspot.com',
+				messagingSenderId: '287553553595',
+				appId: '1:287553553595:web:c5e8adde4ca305cfaad59e',
+				measurementId: 'G-30270TW59M',
+			};
+			
+			
+			// Initialize Firebase
+			const app = initializeApp(firebaseConfig);
+			const googleProvider = new GoogleAuthProvider(app);
+			const auth = getAuth(app);
+			
+			loginEmailPassword.addEventListener('click', (e)=> {
+				e.preventDefault();
+				var loginEmail = document.getElementById('email').value;
+				var loginPassword = document.getElementById('psw').value;
+
+				signInWithEmailAndPassword(auth, loginEmail, loginPassword)
+				.then((userCredential) => {
+					// Signed in 
+					const user = userCredential.user;
+					const log = document.createElement('a');
+					log.setAttribute('href', 'index.html');
+					log.click();
+					// alert('User signed in successfully')
+				})
+				.catch((error) => {
+					const errorCode = error.code;
+					const errorMessage = error.message;
+					alert('Incorrect password');
+				});
+			});
+
+			createUser.addEventListener('click', (e) => {
+				e.preventDefault();
+				var email = document.getElementById('createEmail').value;
+				var password = document.getElementById('creatPsw').value;
+				// var log_user = document.getElementById('log').href;
+				createUserWithEmailAndPassword(auth, email, password)
+					.then((userCredential) => {
+						// Signed in 
+						const user = userCredential.user;
+						const goToLog = document.createElement('a');
+						goToLog.setAttribute('href', 'login.html');
+						goToLog.click();
+						// alert('user created successfully');
+					})
+					.catch((error) => {
+						const errorCode = error.code;
+						const errorMessage = error.message;
+						// ..
+						alert(errorMessage);
+					});
+			});
+
+			googleLogIn.addEventListener('click', e => {
+				signInWithPopup(auth, googleProvider)
+					.then((result) => {					
+						// The signed-in user info.
+						const user = result.user;
+						const gLogIn = document.createElement('a');
+						gLogIn.setAttribute('href', 'index.html');
+						gLogIn.click();
+
+						
+						
+					}).catch((error) => {
+						// Handle Errors here.
+						const errorCode = error.code;
+						const errorMessage = error.message;
+						// The email of the user's account used.
+						const email = error.customData.email;
+						// The AuthCredential type that was used.
+						const credential = GoogleAuthProvider.credentialFromError(error);
+						// ...
+					});
+			});
+		
+		  </script>
+	</body>
+
+</html>
